@@ -1,80 +1,48 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-const int N = 100;
+// Modern, compact BFS suitable for competitive programming (C++23)
+// Reads a directed graph (n, m) followed by m edges (0-based by default),
+// runs BFS from source s (default 0) and prints distances (-1 = unreachable).
 
-typedef vector< vector<int> > grafo;
-
-grafo g;
-
-int visi[N], pred[N], dist[N];
-
-/* Usando lista de adjacencias */
-void BFS(int s){
-   queue<int> q;
-
-   if(int i = 0; i < N; i++){
-       visi[i] = false;
-   }
-   visi[s] = true;
-   dist[s] = 0;
-   q.push(s);
-   while(!q.empty()){
-      int a = q.front();
-      q.pop();
- 		int sz = g[a].size();
-      for(int i = 0; i < sz; i++){
-         if(!visi[g[a][i]]){
-            visi[g[a][i]] = true;
-            pred[g[a][i]] = a;
-            dist[g[a][i]] = dist[a] + 1;
-            q.push(g[a][i]);
-         }
-      }
-   }
+pair<vector<int>, vector<int>> bfs(const vector<vector<int>>& g, int s) {
+    int n = (int)g.size();
+    vector<int> dist(n, -1), pred(n, -1);
+    queue<int> q;
+    dist[s] = 0;
+    q.push(s);
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (int v : g[u]) {
+            if (dist[v] == -1) {
+                dist[v] = dist[u] + 1;
+                pred[v] = u;
+                q.push(v);
+            }
+        }
+    }
+    return {dist, pred};
 }
 
-/* Usando matriz de adjacencias */
-void bfs(int n, int s){
-	int u;
-	queue<int> q;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	for(int v = 0; v < n; v++){
-		visi[v] = 0;
-	}
-	q.push(s);
-	dist[s] = 0;
-	visi[s] = 1;
-	while(!q.empty()){
-		u = q.front();
-		q.pop();
-		for(int v = 0; v < n; v++){
-			if(grafo[u][v] == 1){
-				if(visi[v] == 0){
-					dist[v] = dist[u] + 1;
-					pred[v] = u;
-				    visi[v] = 1;
-				    q.push(v);
-				}
-			}
-		}
-	}
-}
+    int n, m;
+    if (!(cin >> n >> m)) return 0;
+    vector<vector<int>> g(n);
+    for (int i = 0; i < m; ++i) {
+        int u, v; cin >> u >> v;
+        // If input is 1-based, uncomment: // --u; --v;
+        g[u].push_back(v);
+        // For undirected graphs also add: // g[v].push_back(u);
+    }
 
-int main()
-{
-   int a, v;
-   
-   cin >> v >> a;
-   
-   g.resize(v);   
-   for(int x, y, i = 0; i < a; i++){
-      cin >> x >> y;
-      g[x].push_back(y);
-      //g[x][y] = 1
-   }   
-   bfs(0);
+    int s = 0; // change source if needed or read from input
+    auto [dist, pred] = bfs(g, s);
 
-   return 0;
+    // Output distances: index: distance
+    for (int i = 0; i < n; ++i) cout << i << ": " << dist[i] << '\n';
+
+    return 0;
 }
