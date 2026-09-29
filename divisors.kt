@@ -1,4 +1,4 @@
-// divisores.kt
+// divisors.kt
 // Competitive programming - divisors of a number (Kotlin)
 // Usage: compile with kotlinc or run with Kotlin/JVM. Assumes input n (Long).
 
@@ -39,7 +39,7 @@ private class FastScanner {
     }
 }
 
-fun divisores(n: Long, proper: Boolean = false): LongArray {
+fun divisors(n: Long, proper: Boolean = false): LongArray {
     val ds = ArrayList<Long>()
     var i = 1L
     while (i * i <= n) {
@@ -58,6 +58,6 @@ fun divisores(n: Long, proper: Boolean = false): LongArray {
 fun main() {
     val fs = FastScanner()
     val n = fs.nextLong()
-    val ds = divisores(n, proper = false)
+    val ds = divisors(n, proper = false)
     println(ds.joinToString(" "))
 }
