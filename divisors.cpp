@@ -7,7 +7,7 @@ using ll = long long;
 
 vector<ll> divisors(ll n, bool proper = false) {
     vector<ll> d;
-    for (ll i = 1; i * i <= n; ++i) {
+    for (ll i = 1; i <= n / i; ++i) {
         if (n % i == 0) {
             ll a = i, b = n / i;
             if (proper && a == n) continue; // skip n itself if proper divisors requested

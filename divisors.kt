@@ -42,7 +42,7 @@ private class FastScanner {
 fun divisors(n: Long, proper: Boolean = false): LongArray {
     val ds = ArrayList<Long>()
     var i = 1L
-    while (i * i <= n) {
+    while (i <= n / i) {
         if (n % i == 0L) {
             val a = i
             val b = n / i
