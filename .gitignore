@@ -18,3 +18,5 @@ cmake-build-*/
 
 # Common local executable/output files
 *.out
+!challenge-template/cpp/output.out
+!challenge-template/kotlin/output.out
