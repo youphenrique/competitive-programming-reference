@@ -1,66 +1,55 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-typedef pair<int, int> pii;
+// Modern Dijkstra for competitive programming (C++23)
+// Reads n m followed by m edges: u v w (0-based by default).
+// Outputs distances from source s (default 0), and keeps predecessors for path reconstruction.
 
-const int N = 105;
-const int inf = 1e9;
+using ll = long long;
+const ll INF = (1LL<<60);
 
-int pred[N],  dist[N];
-int g[N][N];
-
-void dijkstra(int s, int n){
-	set<pii> q;
-
-	for(int v = 0; v < n; v++){
-	  dist[v] = inf;
-	}
-	dist[s] = 0;
-	pred[s] = -1;
-	q.insert(make_pair(0, s));
-	while(!q.empty()){
-		int u = q.begin()->second;
-		q.erase(q.begin());
-		for(int v = 0; v < n; v++){
-			if(g[u][v] != inf){
-				if(dist[u] + g[u][v] < dist[v]){
-					if(dist[v] != inf){
-						q.erase(q.find(pii(dist[v], v)));
-					}
-					dist[v] = dist[u] + g[u][v];
-					pred[v] = u;
-					q.insert(pii(dist[v], v));
-				}
-			}
-		}
-	}
+pair<vector<ll>, vector<int>> dijkstra(const vector<vector<pair<int,ll>>>& g, int s) {
+    int n = (int)g.size();
+    vector<ll> dist(n, INF);
+    vector<int> pred(n, -1);
+    dist[s] = 0;
+    priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<>> pq;
+    pq.push({0, s});
+    while(!pq.empty()){
+        auto [d,u] = pq.top(); pq.pop();
+        if (d != dist[u]) continue;
+        for (auto [v, w] : g[u]){
+            if (dist[u] + w < dist[v]){
+                dist[v] = dist[u] + w;
+                pred[v] = u;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+    return {dist, pred};
 }
 
-int main()
-{
-	int nn = 5;
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	for(int i = 0; i <= nn; i++){
-		for(int j = 0; j <= nn; j++){
-			g[i][j] = inf;
-		}
-	}
+    int n, m;
+    if (!(cin >> n >> m)) return 0;
+    vector<vector<pair<int,ll>>> g(n);
+    for (int i = 0; i < m; ++i){
+        int u, v; ll w; cin >> u >> v >> w;
+        // If input is 1-based: // --u; --v;
+        g[u].push_back({v, w});
+        // For undirected graphs: // g[v].push_back({u, w});
+    }
 
-	g[0][1] = 10; g[0][2] = 5;
-	g[1][2] = 3; g[1][3] = 1;
-	g[2][1] = 2; g[2][3] = 9;
-	g[2][4] = 8; g[3][4] = 4;
-	g[4][3] = 6;
-	
-	printf("%d\n", dijkstra(0, 4, nn));
-	for(int i = 0; i < nn; i++){
-		printf("pred[%d] = %d\n", i, pred[i]);
-	}
-	printf("\n");
-	for(int i = 0; i < nn; i++){
-		printf("dist[%d] = %d\n", i, dist[i]);
-	}
+    int s = 0; // change or read from input
+    auto [dist, pred] = dijkstra(g, s);
 
-	return 0;
+    for (int i = 0; i < n; ++i){
+        if (dist[i] >= INF/2) cout << i << ": " << -1 << '\n';
+        else cout << i << ": " << dist[i] << '\n';
+    }
+
+    return 0;
 }
